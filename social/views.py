@@ -7,4 +7,4 @@ def index(request):
     return render(request,"social/index.html")
 
 def server_update(request):
-    return HttpResponse("<h1>In the Name of God most Merci most Mercifull</h1>")
+    return HttpResponse("<p>Just Testing</p></br><h1>In the Name of God most Merci most Mercifull</h1>")
