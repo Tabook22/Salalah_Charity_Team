@@ -25,7 +25,7 @@ SECRET_KEY = '7-eoulp*k15d8vb4%rl=!(atw4s9l1t*)du-2q=j9k21)+r3w7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://salalahct.herokuapp.com/ ']
 
 
 # Application definition
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -126,7 +127,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'social/static')
 ]
 
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # location where django collect all static files
 # This generates the directory where files static files are placed when you run ./manage.py collectstatic
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -135,3 +136,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # MEDIA
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
+
+
+#Update Database Configuration in settings.py (at the bottom of the file)
+import dj_database_url 
+prod_db  =  dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(prod_db)
