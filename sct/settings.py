@@ -23,8 +23,8 @@ SECRET_KEY = '7-eoulp*k15d8vb4%rl=!(atw4s9l1t*)du-2q=j9k21)+r3w7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.herokuapp.com',
-                 'https://salalahct.herokuapp.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', '127.0.0.1', '.herokuapp.com',
+                 'https://salalahct.herokuapp.com']
 
 
 # Application definition
@@ -77,10 +77,22 @@ WSGI_APPLICATION = 'sct.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'da6uh53decfg2j',
+        'USER': 'wlodydhlipmuhl',
+        'PASSWORD': '0791114eb39a7d18cef0ce24d6454328b252d11ce2378e86abedce971f21decc',
+        'HOST': 'ec2-35-168-54-239.compute-1.amazonaws.com',
+        'PORT': 5432,
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 
 # Password validation
