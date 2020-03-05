@@ -3,23 +3,47 @@ from django.db import models
 # Create your models here.
 
 class Family(models.Model):
+    FAMILY_TYPE=[
+        ('أيتام','أيتام'),
+        ('دخل محدود','دخل محدود'),
+        ('أسرة ضمانية','أسرة ضمانية'),
+        ('عجز','عجز')
+    ]
+
+    HASBAND_STATUS=[
+        ('عاطل','عاطل'),
+        ('مسجون','مسجون'),
+        ('عاجز','عاجز'),
+        ('متوفي','متوفي')
+    ]
+    
+    WIFE_STATUS=[
+        ('ربة منزل','ربة منزل'),
+        ('أرملة','أرملة'),
+        ('هجر','هجر'),
+        ('عجز','عجز'),
+        ('مريضة','مريضة'),
+        ('متوفاة','متوفاة'),
+        ('مطلقة','مطلقة')
+    ]
+
     regdt=models.DateTimeField(auto_now_add=True)
     gov=models.CharField(verbose_name="المحافظة", max_length=50,null=True, blank=True)
     wly=models.CharField(verbose_name="الولاية", max_length=50, null=True, blank=True)
     vill=models.CharField(verbose_name="القرية",max_length=50, null=True, blank=True)
     stre=models.CharField(verbose_name="الشارع", max_length=50, null=True, blank=True)
-    ftype=models.CharField(verbose_name="فئة الأسرة", max_length=50,null=True, blank=True)
+    ftype=models.CharField(verbose_name="فئة الأسرة", max_length=50,choices=FAMILY_TYPE, default=FAMILY_TYPE[1][1],  null=True, blank=True)
     hasname=models.CharField(verbose_name="إسم الزوج", max_length=300, null=True, blank=True)
     hasnat=models.CharField(verbose_name="جنسية الزوج", max_length=50,null=True, blank=True)
     hasid=models.CharField(verbose_name="الرقم المدني", max_length=50,null=True, blank=True)
     hasmobile=models.CharField(verbose_name="هاتف الزوج", max_length=50,null=True, blank=True)
     hasstatus=models.CharField(verbose_name="حالة الزوج", max_length=50, null=True)
-    hasstatus_others=models.TextField(verbose_name="أخري", null=True)
+    hasstatus_others=models.TextField(verbose_name="أخري", default=HASBAND_STATUS[1][1], null=True, blank=True)
     wfname=models.CharField(verbose_name="إسم الزوجة", max_length=300,null=True, blank=True)
     wfnat=models.CharField(verbose_name="جنسية الزوجة", max_length=50,null=True, blank=True)
     wfid=models.CharField(verbose_name="الرقم المدني", max_length=50,null=True, blank=True)
     wfmobile=models.CharField(verbose_name="رقم الهاتف", max_length=50,null=True, blank=True)
-    wfstatus=models.CharField(verbose_name="حالة الزوجة", max_length=300, null=True, blank=True)
+    wfstatus=models.CharField(verbose_name="حالة الزوجة", max_length=300, choices=WIFE_STATUS, default=WIFE_STATUS[1][1], null=True, blank=True)
     wfstatus_others=models.TextField(verbose_name="أخرى", null=True)
     orph=models.CharField(verbose_name="إسم ولي أمر الأيتام أو الوكيل", max_length=300, null=True)
     orph_id=models.CharField(verbose_name="الرقم المدني", max_length=50, null=True)
@@ -36,6 +60,10 @@ class FamilyMember(models.Model):
     study_elm=models.IntegerField(verbose_name="عدد الطلبة في الإعدادي",  null=True,blank=True)
     study_elm=models.IntegerField(verbose_name="عدد الطلبة في الثانوي", null=True,blank=True)
     study_elm=models.IntegerField(verbose_name="عدد الطلبة في الجامعي",  null=True,blank=True)
+    fid=models.ForeignKey(Family, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "Family Id"  + self.fid  + " - No of Members"
 
 class FamilyMemberDetail(models.Model):
     fullname=models.CharField(verbose_name="الأسم الثلاثي و القبيلة",  max_length=300,null=True, blank=True)
@@ -50,6 +78,11 @@ class FamilyMemberDetail(models.Model):
     installment=models.DecimalField(verbose_name="مبلغ القسط الشهري", max_digits=6, decimal_places=2)
     loandesc=models.TextField(verbose_name="سبب القرض",null=True, blank=True)
     healthstatus=models.TextField(verbose_name="إسم الحالة الصحية",null=True, blank=True)
+    fid=models.ForeignKey(Family, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "Family Id"  + self.fid  + " - Member Details"
+    
 
 class FamilyIncome(models.Model):
     mainIncom=models.DecimalField(verbose_name="مبلغ الراتب",max_digits=6, decimal_places=2)
@@ -57,6 +90,10 @@ class FamilyIncome(models.Model):
     insuIncom=models.DecimalField(verbose_name="الضمان",max_digits=6, decimal_places=2)
     sctIncom=models.DecimalField(verbose_name="مبلغ فريق صلالة الخيري",max_digits=6, decimal_places=2)
     othersIncom=models.DecimalField(verbose_name="مبالغ أخرى",max_digits=6, decimal_places=2)
+    fid=models.ForeignKey(Family, on_delete=models.CASCADE)
+
+def __str__(self):
+        return "Family Id"  + self.fid  + " - Incomes"
 
 class FamilyHouse(models.Model):
     housetype=models.CharField(verbose_name="نوع السكن", max_length=50,null=True, blank=True)
@@ -70,6 +107,10 @@ class FamilyHouse(models.Model):
     houserent_r=models.DecimalField(verbose_name="المتبقي من الإيجار الشهري",max_digits=6, decimal_places=2)
     houseelec_r=models.DecimalField(verbose_name="مبالغ فاتورة الكهرباء",max_digits=6, decimal_places=2)
     housewater_r=models.DecimalField(verbose_name="مبالغ فاتورةالمياة",max_digits=6, decimal_places=2)
+    fid=models.ForeignKey(Family, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "Family Id"  + self.fid  + " - House Details"
 
 class FamilyAssit(models.Model):
     assit_private_cars=models.IntegerField(verbose_name="السيارات الخاصة", null=True,blank=True)
@@ -77,6 +118,10 @@ class FamilyAssit(models.Model):
     assit_school_bus=models.IntegerField(verbose_name="حافلات المدرسة", null=True,blank=True)
     assit_gaz_car=models.IntegerField(verbose_name="سيارات الغاز",  null=True,blank=True)
     assit_others=models.TextField(verbose_name="أخرى", null=True)
+    fid=models.ForeignKey(Family, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "Family Id"  + self.fid  + " - Assit"
 
 
 class FamilyLoan(models.Model):
@@ -85,14 +130,45 @@ class FamilyLoan(models.Model):
     totalloan=models.DecimalField(verbose_name="مبلغ القرض",max_digits=6, decimal_places=2)
     instllament=models.DecimalField(verbose_name="القسط الشهري",max_digits=6, decimal_places=2)
     balanc=models.DecimalField(verbose_name="المبلغ المتبقي",max_digits=6, decimal_places=2)
-
+    fid=models.ForeignKey(Family, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "Family Id"  + self.fid  + " - Loan Details"
 class FamilyNeeds(models.Model):
     food_supply=models.BooleanField(verbose_name="كفالة مواد غذائية",default=False)
     orp_care=models.BooleanField(verbose_name="كفالة أسر أيتام",default=False)
     elec_needs=models.TextField(verbose_name="المواد الكهربائية", null=True, blank=True)
     furn_needs=models.TextField(verbose_name="الأثاث المنزلي",  null=True, blank=True)
     other_needs=models.TextField(verbose_name="متطلبات أخري",  null=True, blank=True)
+    fid=models.ForeignKey(Family, on_delete=models.CASCADE)
 
 class FamilyReport(models.Model):
-    fid=models.ForeignKey(Family, on_delete=models.CASCADE)
     family_report=models.TextField(verbose_name="تقرير الباحث الإجتماعي عن حالة الأسرة",null=True, blank=True)
+    recome=models.TextField(verbose_name="إقتراحات الباحث",null=True, blank=True)
+    res_name=models.CharField(verbose_name="إسم الباحث", max_length=200, null=True, blank=True)
+    res_date=models.DateTimeField(verbose_name="تاريخ البحث",null=True, blank=True)
+    res_tel=models.CharField(verbose_name="رقم الهاتف",max_length=30, null=True, blank=True)
+    comm_rec=models.TextField(verbose_name="توصية اللجنة", null=True, blank=True)
+    fid=models.ForeignKey(Family, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "Family Id"  + self.fid  + " - Report Details"
+     
+class FamilyAttch(models.Model):   
+    letter_app = models.FileField(verbose_name="رسالة طلب لفريق صلالة الخيري", upload_to='documents/%Y/%m/%d/%H/%M/%S/', default = 'documents/None/no-img.jpg')
+    id_copy1 = models.FileField(verbose_name="البطاقة الشخصية لصحاب الطلب", upload_to='documents/%Y/%m/%d/%H/%M/%S/', default = 'documents/None/no-img.jpg')
+    id_copy2 = models.FileField(verbose_name="البطاقة الشخصية أو الجواز لكل سكان المنزل", upload_to='documents/%Y/%m/%d/%H/%M/%S/', default = 'documents/None/no-img.jpg')
+    incom_prove = models.FileField(verbose_name="كشف حساب بنكي لمدة ستة شهور", upload_to='documents/%Y/%m/%d/%H/%M/%S/', default = 'documents/None/no-img.jpg')
+    dept_prove = models.FileField(verbose_name="إثبات المديونية", upload_to='documents/%Y/%m/%d/%H/%M/%S/', default = 'documents/None/no-img.jpg')
+    workforce_prove = models.FileField(verbose_name="إثبات القوة العاملة", upload_to='documents/%Y/%m/%d/%H/%M/%S/', default = 'documents/None/no-img.jpg')
+    incom_prove = models.FileField(verbose_name="كشف حساب بنكي لمدة ستة شهور", upload_to='documents/%Y/%m/%d/%H/%M/%S/', default = 'documents/None/no-img.jpg')
+    coll_copy = models.FileField(verbose_name="نسخ من عقد الزواج/وثيقة الطلاق/شهادة وفاه/ملكية منزل/حكم بالسجن", upload_to='documents/%Y/%m/%d/%H/%M/%S/', default = 'documents/None/no-img.jpg')
+    rent_prove = models.FileField(verbose_name="نسخة عقد إيجار مثبت", upload_to='documents/%Y/%m/%d/%H/%M/%S/', default = 'documents/None/no-img.jpg')
+    medical_report = models.FileField(verbose_name="تقرير طبي مفصل", upload_to='documents/%Y/%m/%d/%H/%M/%S/', default = 'documents/None/no-img.jpg')
+    fid=models.ForeignKey(Family, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "Family Id"  + self.fid  + " - Attachment Details"       
+        
+
+
